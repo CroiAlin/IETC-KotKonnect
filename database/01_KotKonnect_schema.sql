@@ -49,7 +49,7 @@ CREATE TABLE PROFILS (
     ProfilID        INT AUTO_INCREMENT PRIMARY KEY,
     UtilisateurID   INT          NOT NULL,
     Nom             VARCHAR(100) NOT NULL,
-    Prenom          VARCHAR(100) NOT NULL,
+    Prenom          VARCHAR(100) NOT NULL,  
     Telephone       VARCHAR(20)  NULL,
     Ville           VARCHAR(100) NULL,
     Ecole           VARCHAR(150) NULL,
