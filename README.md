@@ -115,7 +115,11 @@ ng serve
 
 L'application est accessible sur **http://localhost:4200** (le backend doit tourner en parallèle).
 
-Pages disponibles : `/login`, `/register`, et `/` (accueil, accessible uniquement une fois connecté ; sinon redirection automatique vers `/login`).
+Pages disponibles :
+- `/login`, `/register` — connexion / inscription
+- `/` — accueil (nécessite d'être connecté ; sinon redirection vers `/login`)
+- `/biens` — liste publique des kots ; `/biens/:id` exposé via l'API pour le détail
+- `/mes-biens`, `/biens/nouveau`, `/biens/:id/modifier` — gestion des kots (propriétaires uniquement, protégé par `roleGuard`)
 
 ## 7. Comptes de test
 
@@ -147,7 +151,11 @@ Content-Type: application/json
   (reactive forms + validation), `AuthService` avec état par signals, intercepteur JWT
   (ajout du token + renouvellement automatique sur 401), guards de route
   (`authGuard`, `roleGuard`), thème sombre responsive
-- 🔜 Gestion des biens, candidatures, baux, paiements, messagerie
+- ✅ Gestion des biens (kots) : liste publique, détail, CRUD complet pour les propriétaires
+  (création, édition, publication, suppression en soft delete), gestion des photos par URL,
+  accès Dapper avec multi-mapping Bien+Photos, protection par rôle + vérification de propriété
+- ✅ Barre de navigation globale (navigation entre pages, profil connecté, déconnexion)
+- 🔜 Candidatures, baux, paiements, messagerie
 
 ## 9. Endpoints disponibles
 
@@ -156,3 +164,11 @@ Content-Type: application/json
 | POST | `/api/auth/register` | Inscription (ETUDIANT ou PROPRIETAIRE) | 200 + tokens, 400 si mot de passe trop faible, 409 si email pris |
 | POST | `/api/auth/login` | Connexion | 200 + tokens, 401 si identifiants invalides |
 | POST | `/api/auth/refresh` | Nouveau JWT via refresh token | 200 + tokens, 401 si token invalide/expiré |
+| GET | `/api/biens` | Liste des biens publiés (public) | 200 |
+| GET | `/api/biens/{id}` | Détail d'un bien (public) | 200, 404 si inexistant |
+| GET | `/api/biens/mes-biens` | Biens du propriétaire connecté | 200, 401/403 |
+| POST | `/api/biens` | Créer un bien (propriétaire) | 200 + bien, 401/403 |
+| PUT | `/api/biens/{id}` | Modifier un bien (propriétaire owner) | 204, 403 si pas le sien, 404 |
+| DELETE | `/api/biens/{id}` | Supprimer un bien — soft delete (owner) | 204, 403, 404 |
+| POST | `/api/biens/{id}/photos` | Ajouter une photo (URL) au bien (owner) | 204, 403, 404 |
+| DELETE | `/api/biens/{id}/photos/{photoId}` | Supprimer une photo (owner) | 204, 403, 404 |
