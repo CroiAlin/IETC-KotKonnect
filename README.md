@@ -80,7 +80,7 @@ Le fichier de configuration contenant les secrets n'est **pas versionné**. Il f
     "Secret": "remplacez-par-une-chaine-secrete-aleatoire-d-au-moins-32-caracteres",
     "Issuer": "KotKonnect",
     "Audience": "KotKonnectAngular",
-    "AccessTokenMinutes": 15
+    "AccessTokenExpirationMinutes": 15
   }
 }
 ```
@@ -115,12 +115,14 @@ ng serve
 
 L'application est accessible sur **http://localhost:4200** (le backend doit tourner en parallèle).
 
+Pages disponibles : `/login`, `/register`, et `/` (accueil, accessible uniquement une fois connecté ; sinon redirection automatique vers `/login`).
+
 ## 7. Comptes de test
 
-> ⚠️ Section à compléter : les comptes de test seront ajoutés dans `02_KotKonnect_seed.sql`
-> au fur et à mesure de l'avancement du projet.
+> ⚠️ Aucun compte n'est encore pré-chargé (le fichier `02_KotKonnect_seed.sql` sera complété
+> au fur et à mesure du projet).
 
-En attendant, créer un compte via l'API :
+Pour créer un compte, deux possibilités : via l'interface (frontend lancé → http://localhost:4200/register), ou via l'API ci-dessous. **Mot de passe requis : au moins 6 caractères, avec une minuscule, une majuscule et un chiffre** (validé côté frontend ET backend).
 
 ```http
 POST http://localhost:5218/api/auth/register
@@ -139,13 +141,18 @@ Content-Type: application/json
 
 - ✅ Base de données complète (12 tables, contraintes d'intégrité, scripts réexécutables)
 - ✅ Authentification backend : inscription, connexion, renouvellement de session
-  (JWT 15 min + refresh token 7 jours avec rotation, mots de passe hashés BCrypt)
-- 🔜 Authentification frontend, gestion des biens, candidatures, baux, paiements, messagerie
+  (JWT 15 min + refresh token 7 jours avec rotation, mots de passe hashés BCrypt,
+  validation de la force du mot de passe)
+- ✅ Authentification frontend (Angular) : pages de connexion et d'inscription
+  (reactive forms + validation), `AuthService` avec état par signals, intercepteur JWT
+  (ajout du token + renouvellement automatique sur 401), guards de route
+  (`authGuard`, `roleGuard`), thème sombre responsive
+- 🔜 Gestion des biens, candidatures, baux, paiements, messagerie
 
 ## 9. Endpoints disponibles
 
 | Méthode | Route | Description | Réponses |
 |---|---|---|---|
-| POST | `/api/auth/register` | Inscription (ETUDIANT ou PROPRIETAIRE) | 200 + tokens, 409 si email pris |
+| POST | `/api/auth/register` | Inscription (ETUDIANT ou PROPRIETAIRE) | 200 + tokens, 400 si mot de passe trop faible, 409 si email pris |
 | POST | `/api/auth/login` | Connexion | 200 + tokens, 401 si identifiants invalides |
 | POST | `/api/auth/refresh` | Nouveau JWT via refresh token | 200 + tokens, 401 si token invalide/expiré |

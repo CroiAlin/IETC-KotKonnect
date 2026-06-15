@@ -1,1 +1,234 @@
-/* You can add global styles to this file, and also import other style files */
+/* ============================================================
+   KotKonnect — Design system global
+   Thème mauve foncé, ambiance reposante, responsive
+   ============================================================ */
+
+:root {
+  /* Couleurs — thème sombre mauve */
+  --kk-bg: #181221;
+  --kk-surface: #221a30;
+  --kk-surface-2: #2c2340;
+  --kk-text: #ece8f4;
+  --kk-muted: #a99fbe;
+  --kk-border: #382e4d;
+  --kk-primary: #8b5cf6;
+  --kk-primary-hover: #7c3aed;
+  --kk-primary-light: #c4b5fd;
+  --kk-primary-ring: rgba(139, 92, 246, 0.30);
+  --kk-primary-soft: rgba(139, 92, 246, 0.18);
+  --kk-danger: #f87171;
+
+  /* Rayons */
+  --kk-radius: 16px;
+  --kk-radius-sm: 10px;
+
+  /* Ombres */
+  --kk-shadow: 0 10px 34px rgba(0, 0, 0, 0.38);
+
+  /* Typographie */
+  --kk-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ---------- Reset léger ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: var(--kk-font);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--kk-text);
+  /* Fond mauve foncé + reflets violet / rose / bleuté */
+  background:
+    radial-gradient(900px 620px at 12% -8%, rgba(167, 139, 250, 0.20), transparent 60%),
+    radial-gradient(820px 520px at 112% 6%, rgba(244, 114, 182, 0.14), transparent 55%),
+    radial-gradient(760px 640px at 50% 118%, rgba(96, 165, 250, 0.12), transparent 60%),
+    var(--kk-bg);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: var(--kk-primary-light);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Formulaires ---------- */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--kk-text);
+}
+
+input,
+select {
+  font: inherit;
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  color: var(--kk-text);
+  background: var(--kk-surface-2);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius-sm);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input::placeholder {
+  color: #8a8099;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--kk-primary);
+  box-shadow: 0 0 0 4px var(--kk-primary-ring);
+}
+
+select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a99fbe' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  padding-right: 2.2rem;
+}
+
+/* ---------- Boutons ---------- */
+button {
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+  background: var(--kk-primary);
+  border: none;
+  padding: 0.65rem 1.2rem;
+  border-radius: var(--kk-radius-sm);
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+button:hover:not(:disabled) {
+  background: var(--kk-primary-hover);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  background: #352c49;
+  color: #6f6688;
+  cursor: not-allowed;
+}
+
+form button[type='submit'] {
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 0.25rem;
+  font-size: 1rem;
+}
+
+/* ---------- Messages d'erreur ---------- */
+.erreur {
+  margin: 0;
+  color: var(--kk-danger);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* ============================================================
+   Pages d'authentification (login + register)
+   ============================================================ */
+.auth-shell {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--kk-surface);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  box-shadow: var(--kk-shadow);
+  padding: 2.25rem;
+}
+
+.auth-brand {
+  margin: 0 0 1.25rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--kk-primary-light);
+}
+
+.auth-title {
+  font-size: 1.6rem;
+  margin-bottom: 0.4rem;
+}
+
+.auth-subtitle {
+  margin: 0 0 1.75rem;
+  color: var(--kk-muted);
+  font-size: 0.95rem;
+}
+
+.auth-footer {
+  margin: 1.5rem 0 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--kk-muted);
+}
+
+/* ---------- Responsive (mobile / petite tablette) ---------- */
+@media (max-width: 480px) {
+  .auth-shell {
+    padding: 1rem;
+    align-items: flex-start;
+    padding-top: 2.5rem;
+  }
+
+  .auth-card {
+    padding: 1.6rem;
+  }
+
+  .auth-title {
+    font-size: 1.4rem;
+  }
+}

@@ -1,0 +1,61 @@
+<div class="auth-shell">
+  <div class="auth-card">
+    <p class="auth-brand">KotKonnect</p>
+    <h1 class="auth-title">Créer un compte</h1>
+    <p class="auth-subtitle">Rejoignez KotKonnect en quelques secondes.</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label>
+        Email
+        <input type="email" formControlName="email" placeholder="vous@exemple.be" />
+      </label>
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <p class="erreur">Email invalide ou manquant</p>
+      }
+
+      <label>
+        Mot de passe
+        <input type="password" formControlName="motDePasse" placeholder="••••••••" />
+      </label>
+      @if (form.controls.motDePasse.touched) {
+        @if (form.controls.motDePasse.hasError('required')) {
+          <p class="erreur">Mot de passe requis.</p>
+        } @else if (form.controls.motDePasse.hasError('pattern')) {
+          <p class="erreur">6 caractères min, avec une minuscule, une majuscule et un chiffre.</p>
+        }
+      }
+
+      <label>
+        Je suis
+        <select formControlName="role">
+          <option value="ETUDIANT">Étudiant</option>
+          <option value="PROPRIETAIRE">Propriétaire</option>
+        </select>
+      </label>
+
+      <label>
+        Nom
+        <input type="text" formControlName="nom" />
+      </label>
+      @if (form.controls.nom.touched && form.controls.nom.invalid) {
+        <p class="erreur">Nom invalide ou manquant</p>
+      }
+
+      <label>
+        Prénom
+        <input type="text" formControlName="prenom" />
+      </label>
+      @if (form.controls.prenom.touched && form.controls.prenom.invalid) {
+        <p class="erreur">Prénom invalide ou manquant</p>
+      }
+
+      @if (erreur()) {
+        <p class="erreur">{{ erreur() }}</p>
+      }
+
+      <button type="submit" [disabled]="form.invalid">S'inscrire</button>
+    </form>
+
+    <p class="auth-footer">Déjà un compte ? <a routerLink="/login">Se connecter</a></p>
+  </div>
+</div>

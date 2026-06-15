@@ -4,6 +4,7 @@ using KotKonnect.Core.DTOs;
 using KotKonnect.Core.Entities;
 using KotKonnect.Core.Enums;
 using KotKonnect.Core.Interfaces;
+using System.Text.RegularExpressions;
 
 public class AuthService : IAuthService
 {
@@ -24,8 +25,15 @@ public class AuthService : IAuthService
         _tokenService = tokenService;
     }
 
+    private static bool MotDePasseEstValide(string motDePasse) =>
+    Regex.IsMatch(motDePasse, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$");
+
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
     {
+        if (!MotDePasseEstValide(request.MotDePasse))
+            throw new ArgumentException(
+                "Le mot de passe doit contenir au moins 6 caractères, une minuscule, une majuscule et un chiffre.");
+
         var existant = await _utilisateurRepository.GetByEmailAsync(request.Email);
         if (existant is not null)
             throw new InvalidOperationException("Cet email est déjà utilisé.");

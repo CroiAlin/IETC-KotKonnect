@@ -1,0 +1,33 @@
+<div class="auth-shell">
+  <div class="auth-card">
+    <p class="auth-brand">KotKonnect</p>
+    <h1 class="auth-title">Connexion</h1>
+    <p class="auth-subtitle">Connectez-vous à votre espace.</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label>
+        Email
+        <input type="email" formControlName="email" placeholder="vous@exemple.be" />
+      </label>
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <p class="erreur">Email invalide ou manquant</p>
+      }
+
+      <label>
+        Mot de passe
+        <input type="password" formControlName="motDePasse" placeholder="••••••••" />
+      </label>
+      @if (form.controls.motDePasse.touched && form.controls.motDePasse.invalid) {
+        <p class="erreur">Mot de passe requis</p>
+      }
+
+      @if (erreur()) {
+        <p class="erreur">{{ erreur() }}</p>
+      }
+
+      <button type="submit" [disabled]="form.invalid">Se connecter</button>
+    </form>
+
+    <p class="auth-footer">Pas encore de compte ? <a routerLink="/register">S'inscrire</a></p>
+  </div>
+</div>
