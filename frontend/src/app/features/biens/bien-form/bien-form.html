@@ -1,0 +1,99 @@
+<div class="form-shell">
+  <div class="form-card">
+    @if (modeEdition()) {
+      <h1 class="form-title">Modifier le bien</h1>
+      <p class="form-subtitle">Mettez à jour les informations de votre kot.</p>
+    } @else {
+      <h1 class="form-title">Ajouter un kot</h1>
+      <p class="form-subtitle">Le bien est créé en brouillon ; vous le publierez ensuite.</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label>
+        Titre
+        <input type="text" formControlName="titre" placeholder="Ex : Studio lumineux centre-ville" />
+      </label>
+      @if (form.controls.titre.touched && form.controls.titre.invalid) {
+        <p class="erreur">Titre requis</p>
+      }
+
+      <label>
+        Description
+        <textarea formControlName="description" rows="3" placeholder="Décrivez le bien…"></textarea>
+      </label>
+
+      <label>
+        Adresse
+        <input type="text" formControlName="adresse" />
+      </label>
+      @if (form.controls.adresse.touched && form.controls.adresse.invalid) {
+        <p class="erreur">Adresse requise</p>
+      }
+
+      <div class="form-row">
+        <label>
+          Ville
+          <input type="text" formControlName="ville" />
+        </label>
+        <label>
+          Code postal
+          <input type="text" formControlName="codePostal" />
+        </label>
+      </div>
+
+      <div class="form-row">
+        <label>
+          Surface (m²)
+          <input type="number" formControlName="surface" min="1" />
+        </label>
+        <label>
+          Pièces
+          <input type="number" formControlName="nombrePieces" min="1" />
+        </label>
+      </div>
+
+      <div class="form-row">
+        <label>
+          Loyer (€)
+          <input type="number" formControlName="loyerBase" min="0" />
+        </label>
+        <label>
+          Charges (€)
+          <input type="number" formControlName="charges" min="0" />
+        </label>
+      </div>
+
+      @if (erreur()) {
+        <p class="erreur">{{ erreur() }}</p>
+      }
+
+      <button type="submit" [disabled]="form.invalid">
+        {{ modeEdition() ? 'Enregistrer les modifications' : 'Enregistrer le bien' }}
+      </button>
+    </form>
+
+    @if (modeEdition()) {
+      <section class="photos-section">
+        <h2 class="photos-title">Photos</h2>
+
+        @if (photos().length > 0) {
+          <div class="photos-grid">
+            @for (photo of photos(); track photo.photoID) {
+              <div class="photo-item">
+                <img [src]="photo.urlImage" alt="photo du bien" />
+                <button type="button" class="photo-remove" (click)="supprimerPhoto(photo.photoID)">×</button>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="photos-info">Aucune photo pour l'instant.</p>
+        }
+
+        <div class="photo-add">
+          <input #photoInput type="url" placeholder="https://exemple.com/photo.jpg" />
+          <button type="button" (click)="ajouterPhoto(photoInput.value); photoInput.value = ''">Ajouter</button>
+        </div>
+      </section>
+    }
+  </div>
+</div>

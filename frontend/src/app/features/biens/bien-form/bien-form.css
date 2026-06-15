@@ -1,0 +1,133 @@
+.form-shell {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 560px;
+  background: var(--kk-surface);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  box-shadow: var(--kk-shadow);
+  padding: 2rem;
+}
+
+.form-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.form-subtitle {
+  margin: 0 0 1.5rem;
+  color: var(--kk-muted);
+  font-size: 0.95rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem;
+}
+
+textarea {
+  font: inherit;
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  color: var(--kk-text);
+  background: var(--kk-surface-2);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius-sm);
+  resize: vertical;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--kk-primary);
+  box-shadow: 0 0 0 4px var(--kk-primary-ring);
+}
+
+.photos-section {
+  margin-top: 1.75rem;
+  border-top: 1px solid var(--kk-border);
+  padding-top: 1.5rem;
+}
+
+.photos-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.9rem;
+}
+
+.photos-info {
+  color: var(--kk-muted);
+  font-size: 0.9rem;
+  margin: 0 0 0.9rem;
+}
+
+.photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.photo-item {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--kk-radius-sm);
+  overflow: hidden;
+  background: var(--kk-surface-2);
+}
+
+.photo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-remove:hover:not(:disabled) {
+  background: var(--kk-danger);
+}
+
+.photo-add {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.photo-add input {
+  flex: 1;
+}
+
+@media (max-width: 480px) {
+  .form-shell {
+    padding: 1.25rem 1rem;
+  }
+
+  .form-card {
+    padding: 1.5rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,6 +1,7 @@
-@KotKonnect.Api_HostAddress = http://localhost:5218
+@host = http://localhost:5218
 
-POST http://localhost:5218/api/auth/register
+### 1. Inscrire un ÉTUDIANT
+POST {{host}}/api/auth/register
 Content-Type: application/json
 
 {
@@ -10,4 +11,100 @@ Content-Type: application/json
   "nom": "Test",
   "prenom": "Etudiant"
 }
-###
+
+### 2. Inscrire un PROPRIÉTAIRE
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "proprio@test.be",
+  "motDePasse": "Test1234",
+  "role": "PROPRIETAIRE",
+  "nom": "Dupont",
+  "prenom": "Marie"
+}
+
+### 3. Connexion PROPRIÉTAIRE (lance CELLE-CI avant les requêtes protégées)
+# @name loginProprio
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "proprio@test.be",
+  "motDePasse": "Test1234"
+}
+
+### 4. Liste publique (aucun token) -> 200, liste vide au début
+GET {{host}}/api/biens
+
+### 5. Créer un bien en tant que PROPRIÉTAIRE -> doit réussir (200)
+# @name createBien
+POST {{host}}/api/biens
+Content-Type: application/json
+Authorization: Bearer {{loginProprio.response.body.$.accessToken}}
+
+{
+  "titre": "Studio lumineux centre-ville",
+  "description": "Proche campus",
+  "adresse": "Rue des Etudiants 12",
+  "ville": "Mons",
+  "codePostal": "7000",
+  "surface": 28.5,
+  "nombrePieces": 1,
+  "loyerBase": 450,
+  "charges": 60
+}
+
+### 6. Publier le bien (PUT, statut PUBLIE) -> 204
+PUT {{host}}/api/biens/{{createBien.response.body.$.bienID}}
+Content-Type: application/json
+Authorization: Bearer {{loginProprio.response.body.$.accessToken}}
+
+{
+  "titre": "Studio lumineux centre-ville",
+  "description": "Proche campus, renove",
+  "adresse": "Rue des Etudiants 12",
+  "ville": "Mons",
+  "codePostal": "7000",
+  "surface": 28.5,
+  "nombrePieces": 1,
+  "loyerBase": 450,
+  "charges": 60,
+  "statut": "PUBLIE"
+}
+
+### 7. Liste publique -> le bien publié apparaît maintenant
+GET {{host}}/api/biens
+
+### 8. Mes biens (PROPRIÉTAIRE) -> 200
+GET {{host}}/api/biens/mes-biens
+Authorization: Bearer {{loginProprio.response.body.$.accessToken}}
+
+### 9. Détail du bien
+GET {{host}}/api/biens/{{createBien.response.body.$.bienID}}
+
+### 10. Connexion ÉTUDIANT (lance CELLE-CI avant la requête 11)
+# @name loginEtudiant
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@etu.be",
+  "motDePasse": "Test1234!"
+}
+
+### 11. Un ÉTUDIANT tente de créer un bien -> doit ÉCHOUER (403 Forbidden)
+POST {{host}}/api/biens
+Content-Type: application/json
+Authorization: Bearer {{loginEtudiant.response.body.$.accessToken}}
+
+{
+  "titre": "Tentative interdite",
+  "adresse": "x",
+  "ville": "x",
+  "codePostal": "0000",
+  "surface": 10,
+  "nombrePieces": 1,
+  "loyerBase": 100,
+  "charges": 0
+}

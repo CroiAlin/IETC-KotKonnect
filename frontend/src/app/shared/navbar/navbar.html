@@ -1,0 +1,22 @@
+<nav class="navbar">
+  <a class="navbar__brand" routerLink="/biens">KotKonnect</a>
+
+  <div class="navbar__links">
+    <a routerLink="/biens" routerLinkActive="active">Biens</a>
+    @if (auth.user(); as user) {
+      @if (user.role === 'PROPRIETAIRE') {
+        <a routerLink="/mes-biens" routerLinkActive="active">Mes biens</a>
+      }
+    }
+  </div>
+
+  <div class="navbar__user">
+    @if (auth.user(); as user) {
+      <span class="navbar__email">{{ user.email }}</span>
+      <button class="navbar__logout" (click)="deconnexion()">Déconnexion</button>
+    } @else {
+      <a routerLink="/login">Connexion</a>
+      <a class="navbar__cta" routerLink="/register">Inscription</a>
+    }
+  </div>
+</nav>

@@ -1,0 +1,36 @@
+<div class="mes-biens-page">
+  <header class="mes-biens-header">
+    <h1>Mes biens</h1>
+    <a class="btn-link" routerLink="/biens/nouveau">+ Ajouter un kot</a>
+  </header>
+
+  @if (chargement()) {
+    <p class="info">Chargement…</p>
+  } @else if (erreur()) {
+    <p class="erreur">{{ erreur() }}</p>
+  } @else if (biens().length === 0) {
+    <p class="info">Vous n'avez pas encore de bien. Cliquez sur « + Ajouter un kot ».</p>
+  } @else {
+    <div class="mes-biens-grid">
+      @for (bien of biens(); track bien.bienID) {
+        <article class="mb-card">
+          <div class="mb-card__head">
+            <h2 class="mb-card__titre">{{ bien.titre }}</h2>
+            <span class="badge badge--{{ bien.statut.toLowerCase() }}">{{ bien.statut }}</span>
+          </div>
+          <p class="mb-card__ville">{{ bien.ville }} · {{ bien.codePostal }}</p>
+          <p class="mb-card__loyer">
+            {{ bien.loyerBase }} € <span>+ {{ bien.charges }} € charges</span>
+          </p>
+          <div class="mb-card__actions">
+            @if (bien.statut === 'BROUILLON') {
+              <button class="btn-sm" (click)="publier(bien)">Publier</button>
+            }
+            <a class="btn-sm btn-sm--ghost" [routerLink]="['/biens', bien.bienID, 'modifier']">Modifier</a>
+            <button class="btn-sm btn-sm--danger" (click)="supprimer(bien)">Supprimer</button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>

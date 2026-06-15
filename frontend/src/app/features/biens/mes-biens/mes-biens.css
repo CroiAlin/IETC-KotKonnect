@@ -1,0 +1,152 @@
+.mes-biens-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.mes-biens-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.mes-biens-header h1 {
+  font-size: 1.6rem;
+}
+
+.btn-link {
+  background: var(--kk-primary);
+  color: #fff;
+  padding: 0.55rem 1rem;
+  border-radius: var(--kk-radius-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.btn-link:hover {
+  background: var(--kk-primary-hover);
+  text-decoration: none;
+}
+
+.info {
+  color: var(--kk-muted);
+}
+
+.mes-biens-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.1rem;
+}
+
+.mb-card {
+  background: var(--kk-surface);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  padding: 1.1rem 1.2rem;
+}
+
+.mb-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.mb-card__titre {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.mb-card__ville {
+  color: var(--kk-muted);
+  font-size: 0.88rem;
+  margin: 0.3rem 0 0;
+}
+
+.mb-card__loyer {
+  margin: 0.5rem 0 0;
+  font-weight: 700;
+  color: var(--kk-primary-light);
+}
+
+.mb-card__loyer span {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--kk-muted);
+}
+
+.badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.22rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.badge--brouillon {
+  background: rgba(168, 159, 190, 0.18);
+  color: var(--kk-muted);
+}
+
+.badge--publie {
+  background: rgba(93, 202, 165, 0.18);
+  color: #5dcaa5;
+}
+
+.badge--loue {
+  background: var(--kk-primary-soft);
+  color: var(--kk-primary-light);
+}
+
+.badge--supprime {
+  background: rgba(248, 113, 113, 0.18);
+  color: var(--kk-danger);
+}
+
+.mb-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+
+.btn-sm {
+  font-size: 0.82rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--kk-radius-sm);
+  font-weight: 600;
+}
+
+.btn-sm--ghost {
+  background: transparent;
+  color: var(--kk-text);
+  border: 1px solid var(--kk-border);
+}
+
+.btn-sm--ghost:hover {
+  background: rgba(255, 255, 255, 0.06);
+  text-decoration: none;
+}
+
+.btn-sm--danger {
+  background: transparent;
+  color: var(--kk-danger);
+  border: 1px solid var(--kk-danger);
+}
+
+.btn-sm--danger:hover:not(:disabled) {
+  background: rgba(248, 113, 113, 0.12);
+}
+
+@media (max-width: 480px) {
+  .mes-biens-page {
+    padding: 1.25rem 1rem;
+  }
+
+  .mes-biens-grid {
+    grid-template-columns: 1fr;
+  }
+}
