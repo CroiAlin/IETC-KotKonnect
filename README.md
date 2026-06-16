@@ -53,9 +53,9 @@ IETC-KotConnect/
 2. Ouvrir **MySQL Workbench** et se connecter à l'instance locale (`127.0.0.1:3306`, utilisateur `root`).
 3. Ouvrir le fichier `database/01_KotKonnect_schema.sql` (File → Open SQL Script).
 4. Exécuter tout le script (icône éclair ⚡). La base `kotkonnect` est créée avec ses 12 tables.
-5. Exécuter ensuite `database/02_KotKonnect_seed.sql` pour les données de test.
+5. Exécuter ensuite `database/02_KotKonnect_seed.sql` pour charger un jeu de données de démonstration complet (comptes, biens avec photos, candidatures, baux, paiements…).
 
-> Le script de schéma est réexécutable : il supprime et recrée entièrement la base à chaque exécution.
+> Les deux scripts sont réexécutables : `01` supprime et recrée entièrement la base ; `02` vide les tables puis les recharge (idempotent). On peut donc les relancer à tout moment pour repartir d'une base propre et peuplée.
 
 Alternative en ligne de commande :
 
@@ -123,10 +123,19 @@ Pages disponibles :
 
 ## 7. Comptes de test
 
-> ⚠️ Aucun compte n'est encore pré-chargé (le fichier `02_KotKonnect_seed.sql` sera complété
-> au fur et à mesure du projet).
+Le seed (`02_KotKonnect_seed.sql`) charge **7 comptes prêts à l'emploi**. Mot de passe identique pour tous : **`Test1234!`**
 
-Pour créer un compte, deux possibilités : via l'interface (frontend lancé → http://localhost:4200/register), ou via l'API ci-dessous. **Mot de passe requis : au moins 6 caractères, avec une minuscule, une majuscule et un chiffre** (validé côté frontend ET backend).
+| Rôle | Email |
+|---|---|
+| Étudiant | `alice.martin@etu.be` |
+| Étudiant | `bruno.lefevre@etu.be` |
+| Étudiant | `chloe.dubois@etu.be` |
+| Étudiant | `lucas.gerard@etu.be` |
+| Propriétaire | `marie.dupont@proprio.be` |
+| Propriétaire | `jean.bernard@proprio.be` |
+| Propriétaire | `sophie.lambert@proprio.be` |
+
+Pour créer d'autres comptes : via l'interface (http://localhost:4200/register) ou via l'API ci-dessous. **Mot de passe requis : au moins 6 caractères, avec une minuscule, une majuscule et un chiffre** (validé côté frontend ET backend).
 
 ```http
 POST http://localhost:5218/api/auth/register
@@ -143,7 +152,7 @@ Content-Type: application/json
 
 ## 8. Fonctionnalités implémentées à ce stade
 
-- ✅ Base de données complète (12 tables, contraintes d'intégrité, scripts réexécutables)
+- ✅ Base de données complète (12 tables, contraintes d'intégrité, scripts réexécutables) + jeu de données de démonstration (seed idempotent peuplant toutes les tables)
 - ✅ Authentification backend : inscription, connexion, renouvellement de session
   (JWT 15 min + refresh token 7 jours avec rotation, mots de passe hashés BCrypt,
   validation de la force du mot de passe)
@@ -155,7 +164,8 @@ Content-Type: application/json
   (création, édition, publication, suppression en soft delete), gestion des photos par URL,
   accès Dapper avec multi-mapping Bien+Photos, protection par rôle + vérification de propriété
 - ✅ Barre de navigation globale (navigation entre pages, profil connecté, déconnexion)
-- 🔜 Candidatures, baux, paiements, messagerie
+- ✅ Candidatures (backend) : un étudiant postule à un bien publié (une seule candidature par bien — contrainte d'unicité, sinon 409), consultation côté étudiant (« mes candidatures ») et côté propriétaire (« candidatures reçues »), gestion des statuts (ENVOYE / VU / ACCEPTE / REFUSE) réservée au propriétaire du bien ; accès Dapper en multi-mapping (Candidature + Bien + Étudiant)
+- 🔜 Candidatures (frontend), baux, paiements, messagerie
 
 ## 9. Endpoints disponibles
 
@@ -172,3 +182,7 @@ Content-Type: application/json
 | DELETE | `/api/biens/{id}` | Supprimer un bien — soft delete (owner) | 204, 403, 404 |
 | POST | `/api/biens/{id}/photos` | Ajouter une photo (URL) au bien (owner) | 204, 403, 404 |
 | DELETE | `/api/biens/{id}/photos/{photoId}` | Supprimer une photo (owner) | 204, 403, 404 |
+| POST | `/api/candidatures` | Postuler à un bien publié (étudiant) | 200, 403, 404, 409 si déjà postulé |
+| GET | `/api/candidatures/mes-candidatures` | Candidatures de l'étudiant connecté | 200, 401/403 |
+| GET | `/api/candidatures/recues` | Candidatures reçues sur ses biens (propriétaire) | 200, 401/403 |
+| PUT | `/api/candidatures/{id}/statut` | Changer le statut d'une candidature (propriétaire owner) | 204, 400 si statut invalide, 403, 404 |
