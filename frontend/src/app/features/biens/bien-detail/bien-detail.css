@@ -1,0 +1,153 @@
+.detail-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.detail-info {
+  color: var(--kk-muted);
+}
+
+.detail-retour {
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  color: var(--kk-primary-light);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.detail-retour:hover {
+  text-decoration: underline;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.detail-galerie__principale {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: var(--kk-radius);
+  border: 1px solid var(--kk-border);
+  display: block;
+}
+
+.detail-galerie__placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--kk-surface-2);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  color: var(--kk-muted);
+}
+
+.detail-galerie__miniatures {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.detail-miniature {
+  width: 72px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.12s ease, border-color 0.12s ease;
+}
+
+.detail-miniature:hover {
+  opacity: 1;
+}
+
+.detail-miniature--active {
+  border-color: var(--kk-primary-light);
+  opacity: 1;
+}
+
+.detail-infos h1 {
+  font-size: 1.6rem;
+  margin: 0 0 0.4rem;
+}
+
+.detail-localisation {
+  color: var(--kk-muted);
+  margin: 0 0 1rem;
+}
+
+.detail-loyer {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--kk-primary-light);
+  margin: 0 0 1rem;
+}
+
+.detail-loyer span {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--kk-muted);
+}
+
+.detail-caracs {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+  display: flex;
+  gap: 1.5rem;
+  color: var(--kk-muted);
+}
+
+.detail-description {
+  line-height: 1.6;
+}
+
+/* Bloc "Postuler" (rempli en B2) */
+.detail-postuler {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.detail-postuler textarea {
+  width: 100%;
+  background: var(--kk-surface-2);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  color: inherit;
+  padding: 0.7rem;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.detail-postuler button {
+  align-self: flex-start;
+  background: var(--kk-primary, #8b5cf6);
+  color: #fff;
+  border: none;
+  border-radius: var(--kk-radius);
+  padding: 0.6rem 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.detail-postuler button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 720px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}

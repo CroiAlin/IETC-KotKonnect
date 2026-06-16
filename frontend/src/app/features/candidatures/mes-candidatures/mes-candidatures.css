@@ -1,0 +1,103 @@
+.cand-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.cand-header {
+  margin-bottom: 1.5rem;
+}
+
+.cand-header h1 {
+  font-size: 1.6rem;
+}
+
+.cand-info {
+  color: var(--kk-muted);
+}
+
+.cand-liste {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.cand-item {
+  background: var(--kk-surface);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  padding: 1rem 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.cand-item__titre {
+  font-size: 1.05rem;
+  margin: 0 0 0.2rem;
+}
+
+.cand-item__ville {
+  color: var(--kk-muted);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.cand-item__message {
+  margin: 0.5rem 0 0;
+  font-style: italic;
+  color: var(--kk-muted);
+  font-size: 0.9rem;
+}
+
+.cand-item__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.cand-item__date {
+  color: var(--kk-muted);
+  font-size: 0.8rem;
+}
+
+.badge {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.badge--envoye {
+  background: rgba(139, 92, 246, 0.18);
+  color: #c4b5fd;
+}
+
+.badge--vu {
+  background: rgba(59, 130, 246, 0.18);
+  color: #93c5fd;
+}
+
+.badge--accepte {
+  background: rgba(34, 197, 94, 0.18);
+  color: #86efac;
+}
+
+.badge--refuse {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fca5a5;
+}
+
+@media (max-width: 480px) {
+  .cand-page {
+    padding: 1.25rem 1rem;
+  }
+}

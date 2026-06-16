@@ -27,9 +27,25 @@ export const routes: Routes = [
         loadComponent: () => import('./features/biens/bien-form/bien-form').then((m) => m.BienForm),
     },
     {
+        path: 'biens/:id',
+        loadComponent: () => import('./features/biens/bien-detail/bien-detail').then((m) => m.BienDetail),
+    },
+    {
         path: 'mes-biens',
         canActivate: [roleGuard('PROPRIETAIRE')],
         loadComponent: () => import('./features/biens/mes-biens/mes-biens').then((m) => m.MesBiens),
+    },
+    {
+        path: 'mes-candidatures',
+        canActivate: [roleGuard('ETUDIANT')],
+        loadComponent: () =>
+            import('./features/candidatures/mes-candidatures/mes-candidatures').then((m) => m.MesCandidatures),
+    },
+    {
+        path: 'candidatures-recues',
+        canActivate: [roleGuard('PROPRIETAIRE')],
+        loadComponent: () =>
+            import('./features/candidatures/candidatures-recues/candidatures-recues').then((m) => m.CandidaturesRecues),
     },
     {
         path: '',

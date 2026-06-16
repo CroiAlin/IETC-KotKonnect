@@ -6,6 +6,10 @@
     @if (auth.user(); as user) {
       @if (user.role === 'PROPRIETAIRE') {
         <a routerLink="/mes-biens" routerLinkActive="active">Mes biens</a>
+        <a routerLink="/candidatures-recues" routerLinkActive="active">Candidatures reçues</a>
+      }
+      @if (user.role === 'ETUDIANT') {
+        <a routerLink="/mes-candidatures" routerLinkActive="active">Mes candidatures</a>
       }
     }
   </div>

@@ -1,9 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { BienService } from '../../../core/services/bien';
 import { Bien } from '../../../core/models/bien.models';
 
 @Component({
   selector: 'app-biens-list',
+  imports: [RouterLink],
   templateUrl: './biens-list.html',
   styleUrl: './biens-list.css',
 })

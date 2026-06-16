@@ -12,7 +12,7 @@
   } @else {
     <div class="biens-grid">
       @for (bien of biens(); track bien.bienID) {
-        <article class="bien-card">
+        <article class="bien-card" [routerLink]="['/biens', bien.bienID]">
           <div class="bien-card__photo">
             @if (bien.photos.length > 0) {
               <img [src]="bien.photos[0].urlImage" [alt]="bien.titre" />

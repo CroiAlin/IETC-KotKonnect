@@ -29,6 +29,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
