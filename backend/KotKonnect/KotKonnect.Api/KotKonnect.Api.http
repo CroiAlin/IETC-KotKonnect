@@ -108,3 +108,113 @@ Authorization: Bearer {{loginEtudiant.response.body.$.accessToken}}
   "loyerBase": 100,
   "charges": 0
 }
+
+# =========================================================
+#  CANDIDATURES
+#  Pré-requis dans la session : lance d'abord 3 (loginProprio),
+#  5 (createBien), 6 (publier), 10 (loginEtudiant).
+# =========================================================
+
+### 12. POSTULER : l'ÉTUDIANT postule au bien publié -> 200
+# @name postuler
+POST {{host}}/api/candidatures
+Content-Type: application/json
+Authorization: Bearer {{loginEtudiant.response.body.$.accessToken}}
+
+{
+  "bienID": {{createBien.response.body.$.bienID}},
+  "messageEtudiant": "Bonjour, je suis très intéressé par ce kot !"
+}
+
+### 13. DOUBLON : le même étudiant repostule au même bien -> 409 Conflict
+POST {{host}}/api/candidatures
+Content-Type: application/json
+Authorization: Bearer {{loginEtudiant.response.body.$.accessToken}}
+
+{
+  "bienID": {{createBien.response.body.$.bienID}},
+  "messageEtudiant": "Deuxième tentative"
+}
+
+### 14. MAUVAIS RÔLE : un PROPRIÉTAIRE tente de postuler -> 403 Forbidden
+POST {{host}}/api/candidatures
+Content-Type: application/json
+Authorization: Bearer {{loginProprio.response.body.$.accessToken}}
+
+{
+  "bienID": {{createBien.response.body.$.bienID}},
+  "messageEtudiant": "Je ne devrais pas pouvoir"
+}
+
+### 15. BIEN INEXISTANT : postuler à un bien fantôme -> 404 Not Found
+POST {{host}}/api/candidatures
+Content-Type: application/json
+Authorization: Bearer {{loginEtudiant.response.body.$.accessToken}}
+
+{
+  "bienID": 999999,
+  "messageEtudiant": "Bien fantôme"
+}
+
+### 16. MES CANDIDATURES (ÉTUDIANT) -> 200 + titreBien/villeBien remplis (multi-mapping x2)
+GET {{host}}/api/candidatures/mes-candidatures
+Authorization: Bearer {{loginEtudiant.response.body.$.accessToken}}
+
+### 17. CANDIDATURES REÇUES (PROPRIÉTAIRE) -> 200 + emailEtudiant rempli (multi-mapping x3)
+GET {{host}}/api/candidatures/recues
+Authorization: Bearer {{loginProprio.response.body.$.accessToken}}
+
+### 18. CHANGER STATUT : le PROPRIÉTAIRE accepte la candidature -> 204 No Content
+PUT {{host}}/api/candidatures/{{postuler.response.body.$.candidatureID}}/statut
+Content-Type: application/json
+Authorization: Bearer {{loginProprio.response.body.$.accessToken}}
+
+{
+  "statut": "ACCEPTE"
+}
+
+### 19. VÉRIF : les candidatures reçues montrent maintenant ACCEPTE
+GET {{host}}/api/candidatures/recues
+Authorization: Bearer {{loginProprio.response.body.$.accessToken}}
+
+### 20. STATUT INVALIDE -> 400 Bad Request
+PUT {{host}}/api/candidatures/{{postuler.response.body.$.candidatureID}}/statut
+Content-Type: application/json
+Authorization: Bearer {{loginProprio.response.body.$.accessToken}}
+
+{
+  "statut": "NIMPORTEQUOI"
+}
+
+# ---- Ownership : un AUTRE propriétaire ne doit pas pouvoir traiter cette candidature ----
+
+### 21. Inscrire un 2e PROPRIÉTAIRE
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "proprio2@test.be",
+  "motDePasse": "Test1234",
+  "role": "PROPRIETAIRE",
+  "nom": "Autre",
+  "prenom": "Proprio"
+}
+
+### 22. Connexion du 2e propriétaire
+# @name loginProprio2
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "proprio2@test.be",
+  "motDePasse": "Test1234"
+}
+
+### 23. OWNERSHIP : le 2e proprio tente de changer le statut (bien pas à lui) -> 403 Forbidden
+PUT {{host}}/api/candidatures/{{postuler.response.body.$.candidatureID}}/statut
+Content-Type: application/json
+Authorization: Bearer {{loginProprio2.response.body.$.accessToken}}
+
+{
+  "statut": "REFUSE"
+}
