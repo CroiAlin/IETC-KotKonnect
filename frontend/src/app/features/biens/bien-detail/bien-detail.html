@@ -44,8 +44,12 @@
 
         @if (estEtudiant()){
           <div class="detail-postuler">
-            <textarea #msg rows="3" placeholder="Message au propriétaire (optionnel mais interressant pour motiver votre demande)"></textarea>
-            <button (click)="postuler(msg.value)" [disabled]="enCours()">Postuler</button>
+            <textarea
+              rows="3"
+              placeholder="Message au propriétaire (optionnel mais interressant pour motiver votre demande)"
+              [value]="message()"
+              (input)="message.set($any($event.target).value)"></textarea>
+            <button (click)="postuler()" [disabled]="enCours()">Postuler</button>
           </div>
         }
       </div>

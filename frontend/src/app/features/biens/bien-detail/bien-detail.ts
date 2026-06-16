@@ -24,6 +24,7 @@ export class BienDetail {
   readonly erreur = signal<string | null>(null);
   readonly estEtudiant = computed(() => this.auth.user()?.role === 'ETUDIANT');
   readonly enCours = signal(false);
+  readonly message = signal('');
 
   // Photo affichée en grand dans la galerie
   readonly photoActive = signal<string | null>(null);
@@ -47,15 +48,16 @@ export class BienDetail {
     this.photoActive.set(url);
   }
 
-  //Etuidant fait une candidature pour un logement
-  postuler(message: string): void {
+  //Etudiant fait une candidature pour un logement
+  postuler(): void {
     const bien = this.bien();
     if (!bien) return;
 
     this.enCours.set(true);
-    this.candidatureService.postuler({ bienID: bien.bienID, messageEtudiant: message || null}).subscribe({
+    this.candidatureService.postuler({ bienID: bien.bienID, messageEtudiant: this.message() || null}).subscribe({
       next: () => {
         this.toastr.success('Candidature envoyée !');
+        this.message.set('');
         this.enCours.set(false);
       },
       error: (err) => {
