@@ -13,10 +13,12 @@ using Microsoft.AspNetCore.Mvc;
 public class ProfilsController : ControllerBase
 {
     private readonly IProfilRepository _profilRepository;
+    private readonly ICandidatureRepository _candidatureRepository;
 
-    public ProfilsController(IProfilRepository profilRepository)
+    public ProfilsController(IProfilRepository profilRepository, ICandidatureRepository candidatureRepository)
     {
         _profilRepository = profilRepository;
+        _candidatureRepository = candidatureRepository;
     }
 
     // GET /api/profils/me -> le profil de l'utilisateur connecté (n'importe quel rôle)
@@ -53,13 +55,18 @@ public class ProfilsController : ControllerBase
         return Ok(ToDto(profil));
     }
 
-    // GET /api/profils/{utilisateurId} -> profil d'un autre utilisateur.
-    // ⚠️ Sécurité de base pour l'instant (juste [Authorize] de la classe).
-    // La règle métier « un propriétaire ne voit que le profil d'un étudiant
-    // ayant postulé à un de ses biens » sera ajoutée en demande D (Forbid 403 sinon).
+    // GET /api/profils/{utilisateurId} -> un PROPRIETAIRE consulte le profil d'un candidat.
+    // Sécurité : il ne peut voir QUE les étudiants ayant postulé à un de SES biens (sinon 403).
     [HttpGet("{utilisateurId:int}")]
+    [Authorize(Roles = "PROPRIETAIRE")]
     public async Task<ActionResult<ProfilDto>> GetProfil(int utilisateurId)
     {
+        var aPostuleChezMoi = await _candidatureRepository.EtudiantAPostuleChezProprioAsync(utilisateurId, GetUserId());
+        if (!aPostuleChezMoi)
+        {
+            return Forbid();
+        }
+
         var profil = await _profilRepository.GetByUtilisateurIdAsync(utilisateurId);
         if (profil is null)
         {

@@ -97,7 +97,7 @@ public class CandidatureRepository : ICandidatureRepository
             sql,
             (candidature, bien, etudiant) =>
             {
-                // inutile de faire un check ici car une candidature ne peut pas être liée à plusieurs biens ou étudiants, mais on suit le pattern Dapper pour éviter les doublons
+                // inutile de faire un check ici car une candidature ne peut pas ï¿½tre liï¿½e ï¿½ plusieurs biens ou ï¿½tudiants, mais on suit le pattern Dapper pour ï¿½viter les doublons
                 if (!candidatureDict.TryGetValue(candidature.CandidatureID, out var currentCandidature))
                 {
                     currentCandidature = candidature;
@@ -155,5 +155,19 @@ public class CandidatureRepository : ICandidatureRepository
         using var connection = _connectionFactory.CreateConnection();
 
         return await connection.ExecuteAsync(sql, new { CandidatureId = candidatureId, Statut = statut.ToString() }) > 0;
+    }
+
+
+    public async Task<bool> EtudiantAPostuleChezProprioAsync(int etudiantId, int proprietaireId)
+    {
+        const string sql = @"
+            SELECT COUNT(*) 
+            FROM CANDIDATURES c
+            JOIN BIENS b ON b.BienID = c.BienID
+            WHERE c.EtudiantID = @EtudiantId AND b.ProprietaireID = @ProprietaireId;";
+
+        using var connection = _connectionFactory.CreateConnection();
+
+        return await connection.ExecuteScalarAsync<int>(sql, new { EtudiantId = etudiantId, ProprietaireId = proprietaireId }) > 0;
     }
 }

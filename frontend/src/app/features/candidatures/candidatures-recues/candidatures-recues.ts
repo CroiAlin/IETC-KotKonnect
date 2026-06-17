@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CandidatureService } from '../../../core/services/candidature';
 import { Candidature, StatutCandidature } from '../../../core/models/candidature.models';
 
 @Component({
   selector: 'app-candidatures-recues',
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink],
   templateUrl: './candidatures-recues.html',
   styleUrl: './candidatures-recues.css',
 })

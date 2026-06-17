@@ -118,8 +118,10 @@ L'application est accessible sur **http://localhost:4200** (le backend doit tour
 Pages disponibles :
 - `/login`, `/register` — connexion / inscription
 - `/` — accueil (nécessite d'être connecté ; sinon redirection vers `/login`)
-- `/biens` — liste publique des kots ; `/biens/:id` exposé via l'API pour le détail
+- `/biens` — liste publique des kots ; `/biens/:id` — détail d'un kot avec galerie photos
 - `/mes-biens`, `/biens/nouveau`, `/biens/:id/modifier` — gestion des kots (propriétaires uniquement, protégé par `roleGuard`)
+- `/mes-candidatures` — candidatures envoyées (étudiant) ; `/candidatures-recues` — candidatures reçues (propriétaire)
+- `/mon-profil` — consultation / modification de son profil ; `/profils/:id` — profil d'un candidat (propriétaire)
 
 ## 7. Comptes de test
 
@@ -164,8 +166,9 @@ Content-Type: application/json
   (création, édition, publication, suppression en soft delete), gestion des photos par URL,
   accès Dapper avec multi-mapping Bien+Photos, protection par rôle + vérification de propriété
 - ✅ Barre de navigation globale (navigation entre pages, profil connecté, déconnexion)
-- ✅ Candidatures (backend) : un étudiant postule à un bien publié (une seule candidature par bien — contrainte d'unicité, sinon 409), consultation côté étudiant (« mes candidatures ») et côté propriétaire (« candidatures reçues »), gestion des statuts (ENVOYE / VU / ACCEPTE / REFUSE) réservée au propriétaire du bien ; accès Dapper en multi-mapping (Candidature + Bien + Étudiant)
-- 🔜 Candidatures (frontend), baux, paiements, messagerie
+- ✅ Candidatures : un étudiant postule à un bien publié (une seule candidature par bien — contrainte d'unicité, sinon 409), consultation côté étudiant (« mes candidatures ») et côté propriétaire (« candidatures reçues »), gestion des statuts (ENVOYE / VU / ACCEPTE / REFUSE) réservée au propriétaire du bien ; accès Dapper en multi-mapping (Candidature + Bien + Étudiant). Frontend complet avec notifications **ngx-toastr** (bibliothèque tierce)
+- ✅ Profils : création automatique du profil à l'inscription, page « Mon profil » (consultation + modification via reactive form), nom/prénom et badge de rôle affichés dans la navbar ; un propriétaire peut consulter le profil d'un candidat **uniquement** si celui-ci a postulé à un de ses biens (autorisation métier vérifiée en base, 403 sinon)
+- 🔜 Baux, paiements, messagerie
 
 ## 9. Endpoints disponibles
 
@@ -186,3 +189,6 @@ Content-Type: application/json
 | GET | `/api/candidatures/mes-candidatures` | Candidatures de l'étudiant connecté | 200, 401/403 |
 | GET | `/api/candidatures/recues` | Candidatures reçues sur ses biens (propriétaire) | 200, 401/403 |
 | PUT | `/api/candidatures/{id}/statut` | Changer le statut d'une candidature (propriétaire owner) | 204, 400 si statut invalide, 403, 404 |
+| GET | `/api/profils/me` | Profil de l'utilisateur connecté | 200, 401, 404 |
+| PUT | `/api/profils/me` | Modifier son propre profil | 200 + profil, 401, 404 |
+| GET | `/api/profils/{id}` | Profil d'un candidat (propriétaire, si l'étudiant a postulé chez lui) | 200, 403 sinon, 404 |

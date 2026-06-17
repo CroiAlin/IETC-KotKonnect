@@ -16,6 +16,7 @@
           <div class="cand-item__main">
             <h2 class="cand-item__titre">{{ c.titreBien }}</h2>
             <p class="cand-item__email">{{ c.emailEtudiant }}</p>
+            <a class="cand-item__profil-link" [routerLink]="['/profils', c.etudiantID]">Voir le profil de l'étudiant</a>
             @if (c.messageEtudiant) {
               <p class="cand-item__message">« {{ c.messageEtudiant }} »</p>
             }

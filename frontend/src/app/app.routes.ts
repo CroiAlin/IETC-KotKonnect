@@ -53,6 +53,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/profil/mon-profil/mon-profil').then((m) => m.MonProfil),
     },
     {
+        path: 'profils/:id',
+        canActivate: [roleGuard('PROPRIETAIRE')],
+        loadComponent: () => import('./features/profil/profil-detail/profil-detail').then((m) => m.ProfilDetail),
+    },
+    {
         path: '',
         canActivate: [authGuard],
         loadComponent: () => import('./features/home/home').then((m) => m.Home),

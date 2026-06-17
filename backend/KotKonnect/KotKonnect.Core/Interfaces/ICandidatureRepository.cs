@@ -20,4 +20,7 @@ public interface ICandidatureRepository
     Task<Candidature?> GetByIdAsync(int candidatureId);
 
     Task<bool> UpdateStatutAsync(int candidatureId, StatutCandidature statut);
+
+    // Sécurité (accès profil candidat) : vrai si l'étudiant a postulé à au moins un bien de ce propriétaire
+    Task<bool> EtudiantAPostuleChezProprioAsync(int etudiantId, int proprietaireId);
 }
