@@ -218,3 +218,38 @@ Authorization: Bearer {{loginProprio2.response.body.$.accessToken}}
 {
   "statut": "REFUSE"
 }
+
+# =========================================================
+#  PROFILS (brique B)
+#  Pré-requis : lance d'abord 1 (register étudiant) puis 10 (loginEtudiant).
+# =========================================================
+
+### 24. MON PROFIL (ÉTUDIANT connecté) -> 200, profil créé à l'inscription (Test / Etudiant)
+GET {{host}}/api/profils/me
+Authorization: Bearer {{loginEtudiant.response.body.$.accessToken}}
+
+### 25. MODIFIER MON PROFIL -> 200, renvoie le profil mis à jour
+PUT {{host}}/api/profils/me
+Content-Type: application/json
+Authorization: Bearer {{loginEtudiant.response.body.$.accessToken}}
+
+{
+  "nom": "Etudiant",
+  "prenom": "Test",
+  "telephone": "0470123456",
+  "ville": "Mons",
+  "ecole": "IETC",
+  "budgetMax": 550
+}
+
+### 26. VÉRIF : relire mon profil montre les nouveaux champs
+GET {{host}}/api/profils/me
+Authorization: Bearer {{loginEtudiant.response.body.$.accessToken}}
+
+### 27. SANS TOKEN -> 401 Unauthorized ([Authorize] au niveau de la classe)
+GET {{host}}/api/profils/me
+
+### 28. PROFIL D'UN AUTRE (trou de sécurité actuel, à durcir en demande D)
+# Remplace 1 par un UtilisateurID réel. Aujourd'hui n'importe quel connecté le voit -> 200
+GET {{host}}/api/profils/1
+Authorization: Bearer {{loginEtudiant.response.body.$.accessToken}}

@@ -1,0 +1,54 @@
+<div class="form-shell">
+  <div class="form-card">
+    <h1 class="form-title">Mon profil</h1>
+    <p class="form-subtitle">Complète tes informations pour faciliter tes candidatures.</p>
+
+    @if (chargement()) {
+      <p class="form-subtitle">Chargement…</p>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <label>
+            Prénom
+            <input type="text" formControlName="prenom" />
+          </label>
+          <label>
+            Nom
+            <input type="text" formControlName="nom" />
+          </label>
+        </div>
+        @if (form.controls.prenom.touched && form.controls.prenom.invalid) {
+          <p class="erreur">Prénom requis</p>
+        }
+        @if (form.controls.nom.touched && form.controls.nom.invalid) {
+          <p class="erreur">Nom requis</p>
+        }
+
+        <label>
+          Téléphone
+          <input type="tel" formControlName="telephone" placeholder="Ex : 0470 12 34 56" />
+        </label>
+
+        <div class="form-row">
+          <label>
+            Ville
+            <input type="text" formControlName="ville" />
+          </label>
+          <label>
+            École
+            <input type="text" formControlName="ecole" />
+          </label>
+        </div>
+
+        <label>
+          Budget mensuel max (€)
+          <input type="number" formControlName="budgetMax" min="0" placeholder="Ex : 550" />
+        </label>
+
+        <button type="submit" [disabled]="form.invalid || enCours()">
+          {{ enCours() ? 'Enregistrement…' : 'Enregistrer' }}
+        </button>
+      </form>
+    }
+  </div>
+</div>

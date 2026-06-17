@@ -48,6 +48,11 @@ export const routes: Routes = [
             import('./features/candidatures/candidatures-recues/candidatures-recues').then((m) => m.CandidaturesRecues),
     },
     {
+        path: 'mon-profil',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/profil/mon-profil/mon-profil').then((m) => m.MonProfil),
+    },
+    {
         path: '',
         canActivate: [authGuard],
         loadComponent: () => import('./features/home/home').then((m) => m.Home),

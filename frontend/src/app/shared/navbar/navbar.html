@@ -11,12 +11,16 @@
       @if (user.role === 'ETUDIANT') {
         <a routerLink="/mes-candidatures" routerLinkActive="active">Mes candidatures</a>
       }
+      <a routerLink="/mon-profil" routerLinkActive="active">Mon profil</a>
     }
   </div>
 
   <div class="navbar__user">
     @if (auth.user(); as user) {
-      <span class="navbar__email">{{ user.email }}</span>
+      <span class="navbar__badge" [class.navbar__badge--proprio]="user.role === 'PROPRIETAIRE'">
+        {{ user.role === 'PROPRIETAIRE' ? 'Propriétaire' : 'Étudiant' }}
+      </span>
+      <span class="navbar__name">{{ user.prenom }} {{ user.nom }}</span>
       <button class="navbar__logout" (click)="deconnexion()">Déconnexion</button>
     } @else {
       <a routerLink="/login">Connexion</a>

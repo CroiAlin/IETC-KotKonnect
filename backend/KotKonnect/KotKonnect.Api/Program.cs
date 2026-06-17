@@ -22,6 +22,7 @@ var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()
 builder.Services.AddSingleton(jwtSettings);
 
 builder.Services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
+builder.Services.AddScoped<IProfilRepository, ProfilRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IBienRepository, BienRepository>();
 builder.Services.AddScoped<ICandidatureRepository, CandidatureRepository>();

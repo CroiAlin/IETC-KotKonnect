@@ -7,6 +7,8 @@ import { AuthResponse, LoginRequest, RegisterRequest, Role } from '../models/aut
 interface SessionUser{
   email: string;
   role: Role;
+  nom: string;
+  prenom: string;
 }
 
 @Injectable({
@@ -62,9 +64,15 @@ export class AuthService {
   private ouvrirSession(res: AuthResponse): void {
     localStorage.setItem(this.ACCESS_KEY, res.accessToken);
     localStorage.setItem(this.REFRESH_KEY, res.refreshToken);
-    localStorage.setItem(this.USER_KEY, JSON.stringify({email: res.email, role: res.role}));
 
-    this._user.set({email: res.email, role: res.role});
+    const user: SessionUser = {
+      email: res.email,
+      role: res.role,
+      nom: res.nom,
+      prenom: res.prenom,
+    };
+    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    this._user.set(user);
   }
 
   private lireUser(): SessionUser | null {

@@ -1,0 +1,46 @@
+.form-shell {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 560px;
+  background: var(--kk-surface);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  box-shadow: var(--kk-shadow);
+  padding: 2rem;
+}
+
+.form-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.form-subtitle {
+  margin: 0 0 1.5rem;
+  color: var(--kk-muted);
+  font-size: 0.95rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem;
+}
+
+@media (max-width: 480px) {
+  .form-shell {
+    padding: 1.25rem 1rem;
+  }
+
+  .form-card {
+    padding: 1.5rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

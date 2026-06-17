@@ -18,4 +18,6 @@ export interface AuthResponse {
     refreshToken: string;
     email: string;
     role: Role;
+    nom: string;
+    prenom: string;
 }

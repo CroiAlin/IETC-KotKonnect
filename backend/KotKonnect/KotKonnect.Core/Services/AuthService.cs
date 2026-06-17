@@ -10,17 +10,20 @@ public class AuthService : IAuthService
 {
     private readonly IUtilisateurRepository _utilisateurRepository;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
+    private readonly IProfilRepository _profilRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ITokenService _tokenService;
 
     public AuthService(
         IUtilisateurRepository utilisateurRepository,
         IRefreshTokenRepository refreshTokenRepository,
+        IProfilRepository profilRepository,
         IPasswordHasher passwordHasher,
         ITokenService tokenService)
     {
         _utilisateurRepository = utilisateurRepository;
         _refreshTokenRepository = refreshTokenRepository;
+        _profilRepository = profilRepository;
         _passwordHasher = passwordHasher;
         _tokenService = tokenService;
     }
@@ -52,6 +55,16 @@ public class AuthService : IAuthService
         };
 
         utilisateur.UtilisateurID = await _utilisateurRepository.CreateAsync(utilisateur);
+
+        // Création du profil associé (relation 1-1). Indispensable APRÈS l'insert
+        // de l'utilisateur : on a besoin de son ID auto-incrémenté pour la clé étrangère.
+        var profil = new Profil
+        {
+            UtilisateurID = utilisateur.UtilisateurID,
+            Nom = request.Nom,
+            Prenom = request.Prenom
+        };
+        await _profilRepository.CreateAsync(profil);
 
         return await BuildAuthResponseAsync(utilisateur);
     }
@@ -94,12 +107,18 @@ public class AuthService : IAuthService
             Revoque = false
         });
 
+        // Le nom/prénom vivent dans PROFILS (pas dans UTILISATEURS).
+        // On les joint à la réponse pour que le front affiche l'identité (navbar).
+        var profil = await _profilRepository.GetByUtilisateurIdAsync(utilisateur.UtilisateurID);
+
         return new AuthResponse
         {
             AccessToken = accessToken,
             RefreshToken = refreshToken,
             Email = utilisateur.Email,
-            Role = utilisateur.Role.ToString()
+            Role = utilisateur.Role.ToString(),
+            Nom = profil?.Nom ?? string.Empty,
+            Prenom = profil?.Prenom ?? string.Empty
         };
     }
 }
