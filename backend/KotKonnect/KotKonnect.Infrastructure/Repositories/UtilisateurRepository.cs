@@ -1,10 +1,9 @@
-﻿
 namespace KotKonnect.Infrastructure.Repositories;
 
 using Dapper;
-using KotKonnect.Core.Entities;
-using KotKonnect.Core.Interfaces;
 using KotKonnect.Infrastructure.Data;
+using KotKonnect.Infrastructure.Models;
+using KotKonnect.Infrastructure.Repositories.Abstractions;
 
 public class UtilisateurRepository : IUtilisateurRepository
 {
@@ -43,15 +42,14 @@ public class UtilisateurRepository : IUtilisateurRepository
             INSERT INTO UTILISATEURS (Email, MotDePasseHash, Role, DateCreation)
             VALUES (@Email, @MotDePasseHash, @Role, @DateCreation);
             SELECT LAST_INSERT_ID();";
+
         using var connection = _connectionFactory.CreateConnection();
         return await connection.ExecuteScalarAsync<int>(sql, new
         {
             utilisateur.Email,
             utilisateur.MotDePasseHash,
-            Role = utilisateur.Role.ToString(),
+            utilisateur.Role,
             utilisateur.DateCreation
         });
     }
 }
-
-

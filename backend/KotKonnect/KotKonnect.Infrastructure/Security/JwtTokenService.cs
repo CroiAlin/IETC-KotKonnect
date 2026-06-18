@@ -1,11 +1,11 @@
-﻿namespace KotKonnect.Infrastructure.Security;
+namespace KotKonnect.Infrastructure.Security;
 
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using KotKonnect.Core.Entities;
-using KotKonnect.Core.Interfaces;
+using KotKonnect.Core.IGateways;
+using KotKonnect.Core.Models;
 using Microsoft.IdentityModel.Tokens;
 
 public class JwtTokenService : ITokenService
@@ -26,7 +26,7 @@ public class JwtTokenService : ITokenService
             new Claim(ClaimTypes.Role, utilisateur.Role.ToString())
         };
 
-        // La clé secrète signe le token : sans elle, impossible de forger un token valide
+        // La clé secrète signe le token.
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.Secret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

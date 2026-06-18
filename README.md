@@ -38,12 +38,13 @@ ng version           → Angular CLI 21.x
 
 ```
 IETC-KotConnect/
-├── backend/KotKonnect/            # Solution .NET
-│   ├── KotKonnect.Api/            # Controllers, Program.cs (point d'entrée HTTP)
-│   ├── KotKonnect.Core/           # Entités, DTOs, interfaces, logique métier
-│   └── KotKonnect.Infrastructure/ # Repositories Dapper, BCrypt, JWT, accès MySQL
-├── frontend/                      # Application Angular
+├── backend/KotKonnect/            # Solution .NET — Clean Architecture (API → CORE ← INFRASTRUCTURE)
+│   ├── KotKonnect.Api/            # EndPoints (Minimal API), Middleware, Program.cs (point d'entrée HTTP)
+│   ├── KotKonnect.Core/           # Models, IGateways (ports), UseCases (logique métier) — ne dépend de RIEN
+│   └── KotKonnect.Infrastructure/ # Gateways + Repositories (Dapper), Security (BCrypt/JWT), accès MySQL
+├── frontend/                      # Application Angular (pages/ + components/ + services/api/)
 ├── database/                      # Scripts SQL (création + données de test)
+├── DOCS/ARCHITECTURE.md           # Architecture détaillée + flux de bout en bout (pour la défense)
 └── README.md
 ```
 

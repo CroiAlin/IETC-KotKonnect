@@ -1,0 +1,75 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.bien-card {
+  flex: 1;
+  background: var(--kk-surface);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.bien-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--kk-shadow);
+}
+
+.bien-card__photo {
+  aspect-ratio: 16 / 10;
+  background: var(--kk-surface-2);
+}
+
+.bien-card__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.bien-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--kk-muted);
+  font-size: 0.85rem;
+}
+
+.bien-card__body {
+  padding: 1rem 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.bien-card__titre {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.bien-card__ville,
+.bien-card__infos {
+  color: var(--kk-muted);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.bien-card__loyer {
+  margin: 0.4rem 0 0;
+  font-weight: 700;
+  color: var(--kk-primary-light);
+  font-size: 1.1rem;
+}
+
+.bien-card__loyer span {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--kk-muted);
+}

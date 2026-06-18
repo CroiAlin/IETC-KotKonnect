@@ -1,0 +1,19 @@
+<div class="biens-page">
+  <header class="biens-header">
+    <h1>Kots disponibles</h1>
+  </header>
+
+  @if (chargement()) {
+    <p class="biens-info">Chargement…</p>
+  } @else if (erreur()) {
+    <p class="erreur">{{ erreur() }}</p>
+  } @else if (biens().length === 0) {
+    <p class="biens-info">Aucun kot publié pour le moment.</p>
+  } @else {
+    <div class="biens-grid">
+      @for (bien of biens(); track bien.bienID) {
+        <app-bien-card [bien]="bien" />
+      }
+    </div>
+  }
+</div>

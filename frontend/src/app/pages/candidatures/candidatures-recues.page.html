@@ -1,0 +1,22 @@
+<div class="cand-page">
+  <header class="cand-header">
+    <h1>Candidatures reçues</h1>
+  </header>
+
+  @if (chargement()) {
+    <p class="cand-info">Chargement…</p>
+  } @else if (erreur()) {
+    <p class="erreur">{{ erreur() }}</p>
+  } @else if (candidatures().length === 0) {
+    <p class="cand-info">Aucune candidature reçue pour le moment.</p>
+  } @else {
+    <div class="cand-liste">
+      @for (c of candidatures(); track c.candidatureID) {
+        <app-candidature-card
+          [candidature]="c"
+          [vueProprietaire]="true"
+          (changerStatut)="changerStatut($event.id, $event.statut)" />
+      }
+    </div>
+  }
+</div>

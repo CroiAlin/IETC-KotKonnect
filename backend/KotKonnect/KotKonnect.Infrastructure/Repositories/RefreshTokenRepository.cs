@@ -1,10 +1,9 @@
-﻿
 namespace KotKonnect.Infrastructure.Repositories;
 
 using Dapper;
-using KotKonnect.Core.Entities;
-using KotKonnect.Core.Interfaces;
 using KotKonnect.Infrastructure.Data;
+using KotKonnect.Infrastructure.Models;
+using KotKonnect.Infrastructure.Repositories.Abstractions;
 
 public class RefreshTokenRepository : IRefreshTokenRepository
 {
@@ -26,7 +25,7 @@ public class RefreshTokenRepository : IRefreshTokenRepository
         return await connection.QuerySingleOrDefaultAsync<RefreshToken>(sql, new { Token = token });
     }
 
-    public async Task<bool> RevokeTokenByIdAsync(int tokenID)
+    public async Task<bool> RevokeTokenByIdAsync(int tokenId)
     {
         const string sql = @"
             UPDATE REFRESH_TOKENS
@@ -34,7 +33,7 @@ public class RefreshTokenRepository : IRefreshTokenRepository
             WHERE TokenID = @TokenID";
 
         using var connection = _connectionFactory.CreateConnection();
-        return await connection.ExecuteAsync(sql, new { TokenID = tokenID }) > 0;
+        return await connection.ExecuteAsync(sql, new { TokenID = tokenId }) > 0;
     }
 
     public async Task<int> CreateTokenAsync(RefreshToken refreshToken)
@@ -46,6 +45,5 @@ public class RefreshTokenRepository : IRefreshTokenRepository
 
         using var connection = _connectionFactory.CreateConnection();
         return await connection.ExecuteScalarAsync<int>(sql, refreshToken);
-
     }
 }

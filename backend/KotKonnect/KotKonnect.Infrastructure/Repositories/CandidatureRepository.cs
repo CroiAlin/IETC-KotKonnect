@@ -1,10 +1,9 @@
 namespace KotKonnect.Infrastructure.Repositories;
 
 using Dapper;
-using KotKonnect.Core.Entities;
-using KotKonnect.Core.Enums;
-using KotKonnect.Core.Interfaces;
 using KotKonnect.Infrastructure.Data;
+using KotKonnect.Infrastructure.Models;
+using KotKonnect.Infrastructure.Repositories.Abstractions;
 
 public class CandidatureRepository : ICandidatureRepository
 {
@@ -38,9 +37,8 @@ public class CandidatureRepository : ICandidatureRepository
             BienId = candidature.BienID,
             EtudiantId = candidature.EtudiantID,
             MessageEtudiant = candidature.MessageEtudiant,
-            Statut = candidature.Statut.ToString()
+            Statut = candidature.Statut
         });
-
     }
 
     public async Task<List<Candidature>> GetByEtudiantAsync(int etudiantId)
@@ -52,7 +50,7 @@ public class CandidatureRepository : ICandidatureRepository
             FROM CANDIDATURES c
             JOIN BIENS b ON b.BienID = c.BienID
             WHERE c.EtudiantID = @EtudiantId;";
-        
+
         using var connection = _connectionFactory.CreateConnection();
 
         var candidatureDict = new Dictionary<int, Candidature>();
@@ -89,15 +87,15 @@ public class CandidatureRepository : ICandidatureRepository
             JOIN UTILISATEURS u ON u.UtilisateurID = c.EtudiantID
             WHERE b.ProprietaireID = @ProprietaireId;";
 
-        using var connections = _connectionFactory.CreateConnection();
+        using var connection = _connectionFactory.CreateConnection();
 
         var candidatureDict = new Dictionary<int, Candidature>();
 
-        await connections.QueryAsync<Candidature, BienImmobilier, Utilisateur, Candidature>(
+        await connection.QueryAsync<Candidature, BienImmobilier, Utilisateur, Candidature>(
             sql,
             (candidature, bien, etudiant) =>
             {
-                // inutile de faire un check ici car une candidature ne peut pas �tre li�e � plusieurs biens ou �tudiants, mais on suit le pattern Dapper pour �viter les doublons
+                // Dédup Dapper (ici 1 candidature = 1 bien/étudiant).
                 if (!candidatureDict.TryGetValue(candidature.CandidatureID, out var currentCandidature))
                 {
                     currentCandidature = candidature;
@@ -126,7 +124,7 @@ public class CandidatureRepository : ICandidatureRepository
             WHERE c.CandidatureID = @CandidatureId;";
 
         using var connection = _connectionFactory.CreateConnection();
-        
+
         var candidatureDict = new Dictionary<int, Candidature>();
 
         await connection.QueryAsync<Candidature, BienImmobilier, Candidature>(
@@ -148,20 +146,20 @@ public class CandidatureRepository : ICandidatureRepository
 
         return candidatureDict.Values.FirstOrDefault();
     }
-    public async Task<bool> UpdateStatutAsync(int candidatureId, StatutCandidature statut)
+
+    public async Task<bool> UpdateStatutAsync(int candidatureId, string statut)
     {
         const string sql = @"UPDATE CANDIDATURES SET Statut=@Statut WHERE CandidatureID=@CandidatureId;";
 
         using var connection = _connectionFactory.CreateConnection();
 
-        return await connection.ExecuteAsync(sql, new { CandidatureId = candidatureId, Statut = statut.ToString() }) > 0;
+        return await connection.ExecuteAsync(sql, new { CandidatureId = candidatureId, Statut = statut }) > 0;
     }
-
 
     public async Task<bool> EtudiantAPostuleChezProprioAsync(int etudiantId, int proprietaireId)
     {
         const string sql = @"
-            SELECT COUNT(*) 
+            SELECT COUNT(*)
             FROM CANDIDATURES c
             JOIN BIENS b ON b.BienID = c.BienID
             WHERE c.EtudiantID = @EtudiantId AND b.ProprietaireID = @ProprietaireId;";

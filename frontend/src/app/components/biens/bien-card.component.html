@@ -1,0 +1,17 @@
+<article class="bien-card" [routerLink]="['/biens', bien().bienID]">
+  <div class="bien-card__photo">
+    @if (bien().photos.length > 0) {
+      <img [src]="bien().photos[0].urlImage" [alt]="bien().titre" />
+    } @else {
+      <div class="bien-card__placeholder">Pas de photo</div>
+    }
+  </div>
+  <div class="bien-card__body">
+    <h2 class="bien-card__titre">{{ bien().titre }}</h2>
+    <p class="bien-card__ville">{{ bien().ville }} · {{ bien().codePostal }}</p>
+    <p class="bien-card__infos">{{ bien().surface }} m² · {{ bien().nombrePieces }} pièce(s)</p>
+    <p class="bien-card__loyer">
+      {{ bien().loyerBase }} € <span>+ {{ bien().charges }} € charges</span>
+    </p>
+  </div>
+</article>

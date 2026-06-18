@@ -1,9 +1,9 @@
 namespace KotKonnect.Infrastructure.Repositories;
 
 using Dapper;
-using KotKonnect.Core.Entities;
-using KotKonnect.Core.Interfaces;
 using KotKonnect.Infrastructure.Data;
+using KotKonnect.Infrastructure.Models;
+using KotKonnect.Infrastructure.Repositories.Abstractions;
 
 public class ProfilRepository : IProfilRepository
 {
@@ -14,7 +14,6 @@ public class ProfilRepository : IProfilRepository
         _connectionFactory = connectionFactory;
     }
 
-    // Lecture du profil d'un utilisateur (relation 1-1 -> au plus une ligne).
     public async Task<Profil?> GetByUtilisateurIdAsync(int utilisateurId)
     {
         const string sql = @"
@@ -26,7 +25,6 @@ public class ProfilRepository : IProfilRepository
         return await connection.QueryFirstOrDefaultAsync<Profil>(sql, new { UtilisateurID = utilisateurId });
     }
 
-    // Insertion d'un nouveau profil. Renvoie l'ID auto-incrémenté généré par MySQL.
     public async Task<int> CreateAsync(Profil profil)
     {
         const string sql = @"
@@ -47,7 +45,6 @@ public class ProfilRepository : IProfilRepository
         });
     }
 
-    // Mise à jour des champs modifiables, ciblée sur l'UtilisateurID du connecté.
     public async Task UpdateAsync(Profil profil)
     {
         const string sql = @"

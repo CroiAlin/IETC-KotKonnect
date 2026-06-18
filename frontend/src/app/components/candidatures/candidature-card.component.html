@@ -1,0 +1,39 @@
+<div class="cand-item">
+  <div class="cand-item__main">
+    <h2 class="cand-item__titre">{{ candidature().titreBien }}</h2>
+
+    @if (vueProprietaire()) {
+      <p class="cand-item__email">{{ candidature().emailEtudiant }}</p>
+      <a class="cand-item__profil-link" [routerLink]="['/profils', candidature().etudiantID]">
+        Voir le profil de l'étudiant
+      </a>
+    } @else {
+      <p class="cand-item__ville">{{ candidature().villeBien }}</p>
+    }
+
+    @if (candidature().messageEtudiant) {
+      <p class="cand-item__message">« {{ candidature().messageEtudiant }} »</p>
+    }
+
+    @if (vueProprietaire()) {
+      <p class="cand-item__date">Reçue le {{ candidature().dateCandidature | date: 'dd/MM/yyyy' }}</p>
+    }
+  </div>
+
+  <div class="cand-item__meta">
+    <span [class]="'badge badge--' + candidature().statut.toLowerCase()">{{ candidature().statut }}</span>
+
+    @if (vueProprietaire()) {
+      <div class="cand-actions">
+        <button class="btn-statut btn-statut--vu"
+          (click)="changerStatut.emit({ id: candidature().candidatureID, statut: 'VU' })">Vu</button>
+        <button class="btn-statut btn-statut--accepte"
+          (click)="changerStatut.emit({ id: candidature().candidatureID, statut: 'ACCEPTE' })">Accepter</button>
+        <button class="btn-statut btn-statut--refuse"
+          (click)="changerStatut.emit({ id: candidature().candidatureID, statut: 'REFUSE' })">Refuser</button>
+      </div>
+    } @else {
+      <span class="cand-item__date">{{ candidature().dateCandidature | date: 'dd/MM/yyyy' }}</span>
+    }
+  </div>
+</div>

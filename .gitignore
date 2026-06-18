@@ -16,3 +16,4 @@ frontend/coverage/
 .idea/
 Thumbs.db
 .DS_Store
+DOCS/*

@@ -1,6 +1,6 @@
-﻿namespace KotKonnect.Infrastructure.Security;
+namespace KotKonnect.Infrastructure.Security;
 
-using KotKonnect.Core.Interfaces;
+using KotKonnect.Core.IGateways;
 
 public class BCryptPasswordHasher : IPasswordHasher
 {
@@ -8,6 +8,7 @@ public class BCryptPasswordHasher : IPasswordHasher
     {
         return BCrypt.Net.BCrypt.HashPassword(password);
     }
+
     public bool VerifyPassword(string password, string hashedPassword)
     {
         return BCrypt.Net.BCrypt.Verify(password, hashedPassword);

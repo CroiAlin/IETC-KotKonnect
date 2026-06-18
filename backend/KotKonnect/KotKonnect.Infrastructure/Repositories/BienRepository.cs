@@ -1,9 +1,9 @@
 namespace KotKonnect.Infrastructure.Repositories;
 
 using Dapper;
-using KotKonnect.Core.Entities;
-using KotKonnect.Core.Interfaces;
 using KotKonnect.Infrastructure.Data;
+using KotKonnect.Infrastructure.Models;
+using KotKonnect.Infrastructure.Repositories.Abstractions;
 
 public class BienRepository : IBienRepository
 {
@@ -52,7 +52,6 @@ public class BienRepository : IBienRepository
 
     public async Task<List<BienImmobilier>> GetAllPubliesAsync()
     {
-
         const string sql = @"
             SELECT b.BienID, b.ProprietaireID, b.Titre, b.Description, b.Adresse, b.Ville,
                    b.CodePostal, b.Surface, b.NombrePieces, b.LoyerBase, b.Charges, b.Statut,
@@ -70,13 +69,11 @@ public class BienRepository : IBienRepository
             sql,
             (bien, photo) =>
             {
-                // 1re fois qu'on rencontre ce bien -> on le mémorise
                 if (!biensPublies.TryGetValue(bien.BienID, out var courant))
                 {
                     courant = bien;
                     biensPublies.Add(courant.BienID, courant);
                 }
-                // LEFT JOIN : un bien sans photo donne photo = null
                 if (photo is not null)
                     courant.Photos.Add(photo);
                 return courant;
@@ -84,7 +81,6 @@ public class BienRepository : IBienRepository
             splitOn: "PhotoID");
 
         return biensPublies.Values.ToList();
-
     }
 
     public async Task<List<BienImmobilier>> GetByProprietaireAsync(int proprietaireId)
@@ -106,13 +102,11 @@ public class BienRepository : IBienRepository
             sql,
             (bien, photo) =>
             {
-                // 1re fois qu'on rencontre ce bien -> on le mémorise
                 if (!biensProprietaire.TryGetValue(bien.BienID, out var courant))
                 {
                     courant = bien;
                     biensProprietaire.Add(courant.BienID, courant);
                 }
-                // LEFT JOIN : un bien sans photo donne photo = null
                 if (photo is not null)
                     courant.Photos.Add(photo);
                 return courant;
@@ -143,9 +137,8 @@ public class BienRepository : IBienRepository
             bien.NombrePieces,
             bien.LoyerBase,
             bien.Charges,
-            Statut = bien.Statut.ToString() 
+            bien.Statut
         });
-
     }
 
     public async Task<bool> UpdateAsync(BienImmobilier bien)
@@ -156,9 +149,9 @@ public class BienRepository : IBienRepository
                             Charges=@Charges,Statut=@Statut
             WHERE BienID=@BienID";
 
-        using var connections = _connectionFactory.CreateConnection();
+        using var connection = _connectionFactory.CreateConnection();
 
-        return await connections.ExecuteAsync(sql, new
+        return await connection.ExecuteAsync(sql, new
         {
             bien.BienID,
             bien.ProprietaireID,
@@ -171,7 +164,7 @@ public class BienRepository : IBienRepository
             bien.NombrePieces,
             bien.LoyerBase,
             bien.Charges,
-            Statut = bien.Statut.ToString()
+            bien.Statut
         }) > 0;
     }
 
@@ -180,7 +173,7 @@ public class BienRepository : IBienRepository
         const string sql = @"
            UPDATE BIENS SET Statut='SUPPRIME'
             WHERE BienID=@BienID";
-        
+
         using var connection = _connectionFactory.CreateConnection();
 
         return await connection.ExecuteAsync(sql, new { BienID = bienId }) > 0;
