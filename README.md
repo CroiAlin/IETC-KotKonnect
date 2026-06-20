@@ -44,11 +44,12 @@ IETC-KotConnect/
 │   └── KotKonnect.Infrastructure/ # Gateways + Repositories (Dapper), Security (BCrypt/JWT), accès MySQL
 ├── frontend/                      # Application Angular (pages/ + components/ + services/api/)
 ├── database/                      # Scripts SQL (création + données de test)
-├── DOCS/ARCHITECTURE.md           # Architecture détaillée + flux de bout en bout (pour la défense)
 └── README.md
 ```
 
 ## 3. Installation de la base de données
+
+Ici on va utiliser MySQL Server et MySQL Workbench, si vous préferez utiliser autre chose vous êtes libres de le faire.
 
 1. Démarrer MySQL Server (service `MySQL80` sous Windows — démarré automatiquement après installation).
 2. Ouvrir **MySQL Workbench** et se connecter à l'instance locale (`127.0.0.1:3306`, utilisateur `root`).
