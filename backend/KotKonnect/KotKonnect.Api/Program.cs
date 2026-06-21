@@ -2,9 +2,10 @@ using System.Text;
 using System.Text.Json.Serialization;
 using KotKonnect.Api.EndPoints;
 using KotKonnect.Api.Middleware;
+using KotKonnect.Api.Security;
 using KotKonnect.Core;
+using KotKonnect.Core.IGateways;
 using KotKonnect.Infrastructure;
-using KotKonnect.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -21,9 +22,12 @@ builder.Services.AddOpenApi();
 builder.Services.AddCoreServices();                                // UseCases (logique métier)
 builder.Services.AddInfrastructureServices(builder.Configuration); // repos + gateways + sécurité + MySQL
 
-// JWT : validation des tokens entrants.
+// JWT : préoccupation d'authentification web (génération + validation), gérée ici dans l'Api.
+// La section "Jwt" est lue une seule fois et réutilisée pour les deux usages.
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()
     ?? throw new InvalidOperationException("Section 'Jwt' manquante.");
+builder.Services.AddSingleton(jwtSettings);
+builder.Services.AddScoped<ITokenService, JwtTokenService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

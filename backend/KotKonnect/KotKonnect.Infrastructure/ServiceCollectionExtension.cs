@@ -13,14 +13,10 @@ public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        // MySQL (fabrique de connexion) + paramètres JWT
+        // MySQL (fabrique de connexion)
         var connectionString = configuration.GetConnectionString("Default")
             ?? throw new InvalidOperationException("Chaîne de connexion 'Default' manquante.");
         services.AddSingleton<IDbConnectionFactory>(new MySqlConnectionFactory(connectionString));
-
-        var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>()
-            ?? throw new InvalidOperationException("Section 'Jwt' manquante.");
-        services.AddSingleton(jwtSettings);
 
         // Repositories
         services.AddScoped<IUtilisateurRepository, UtilisateurRepository>();
@@ -36,9 +32,8 @@ public static class ServiceCollectionExtension
         services.AddScoped<IBienGateway, BienGateway>();
         services.AddScoped<ICandidatureGateway, CandidatureGateway>();
 
-        // Sécurité
+        // Sécurité (hachage de mot de passe ; le JWT est géré côté Api)
         services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
-        services.AddScoped<ITokenService, JwtTokenService>();
 
         return services;
     }

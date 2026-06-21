@@ -1,4 +1,4 @@
-namespace KotKonnect.Infrastructure.Security;
+namespace KotKonnect.Api.Security;
 
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

@@ -1,4 +1,4 @@
-﻿namespace KotKonnect.Infrastructure.Security;
+namespace KotKonnect.Api.Security;
 
 public class JwtSettings
 {
