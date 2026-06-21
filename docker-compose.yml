@@ -1,0 +1,30 @@
+# Base de données MySQL pour KotKonnect (développement).
+# Démarrage : docker compose up -d   (depuis la racine du dépôt)
+#
+# Le schéma (01) puis le jeu de données (02) sont chargés AUTOMATIQUEMENT
+# au tout premier démarrage, quand le volume de données est encore vide.
+# Pour forcer un rechargement : docker compose down -v && docker compose up -d
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: kotkonnect-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: kotkonnectdev
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - kotkonnect_mysql_data:/var/lib/mysql
+      - ./database/01_KotKonnect_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./database/02_KotKonnect_seed.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pkotkonnectdev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  kotkonnect_mysql_data:

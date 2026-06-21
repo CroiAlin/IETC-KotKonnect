@@ -21,17 +21,17 @@ Installer les outils suivants (versions utilisées pour le développement) :
 | SDK .NET | 10.0 | https://dotnet.microsoft.com/download |
 | Node.js | 20 LTS ou plus récent | https://nodejs.org |
 | Angular CLI | 21 | `npm install -g @angular/cli` |
-| MySQL Server | 8.0 | https://dev.mysql.com/downloads/installer/ |
-| MySQL Workbench | 8.0 (optionnel mais recommandé) | inclus dans l'installeur MySQL |
+| Docker Desktop | récent (Compose v2) | https://www.docker.com/products/docker-desktop/ |
 | Visual Studio 2026 (ou `dotnet` CLI) | — | pour le backend |
 | Visual Studio Code | — | pour le frontend |
 
 Vérifier les installations :
 
 ```
-dotnet --version     → 10.x
-node --version       → v20.x ou +
-ng version           → Angular CLI 21.x
+dotnet --version       → 10.x
+node --version         → v20.x ou +
+ng version             → Angular CLI 21.x
+docker compose version → Docker Compose v2.x
 ```
 
 ## 2. Structure du dépôt
@@ -47,24 +47,35 @@ IETC-KotConnect/
 └── README.md
 ```
 
-## 3. Installation de la base de données
+## 3. Base de données (Docker)
 
-Ici on va utiliser MySQL Server et MySQL Workbench, si vous préferez utiliser autre chose vous êtes libres de le faire.
+La base tourne dans un **conteneur Docker** : pas besoin d'installer MySQL. Au tout premier démarrage, le conteneur crée la base `kotkonnect` **et** joue automatiquement le schéma (`01`) puis le jeu de données de démonstration (`02`).
 
-1. Démarrer MySQL Server (service `MySQL80` sous Windows — démarré automatiquement après installation).
-2. Ouvrir **MySQL Workbench** et se connecter à l'instance locale (`127.0.0.1:3306`, utilisateur `root`).
-3. Ouvrir le fichier `database/01_KotKonnect_schema.sql` (File → Open SQL Script).
-4. Exécuter tout le script (icône éclair ⚡). La base `kotkonnect` est créée avec ses 12 tables.
-5. Exécuter ensuite `database/02_KotKonnect_seed.sql` pour charger un jeu de données de démonstration complet (comptes, biens avec photos, candidatures, baux, paiements…).
+> ⚠️ Le port **3306** doit être libre. Si un MySQL local tourne déjà (service `MySQL80` sous Windows), arrête-le — PowerShell administrateur : `net stop MySQL80` — ou change le port hôte dans `docker-compose.yml` (ex. `"3307:3306"`).
 
-> Les deux scripts sont réexécutables : `01` supprime et recrée entièrement la base ; `02` vide les tables puis les recharge (idempotent). On peut donc les relancer à tout moment pour repartir d'une base propre et peuplée.
+1. Lancer **Docker Desktop**.
+2. À la racine du dépôt :
+   ```
+   docker compose up -d
+   ```
+3. Attendre que le conteneur soit `healthy` :
+   ```
+   docker compose ps
+   ```
 
-Alternative en ligne de commande :
+La base est alors disponible sur `localhost:3306` — utilisateur `root`, mot de passe `kotkonnectdev` — déjà peuplée (comptes de test, biens, candidatures…).
 
+**Commandes utiles :**
 ```
-mysql -u root -p < database/01_KotKonnect_schema.sql
-mysql -u root -p < database/02_KotKonnect_seed.sql
+docker compose stop      # arrêter (données conservées)
+docker compose up -d     # redémarrer
+docker compose down      # supprimer le conteneur (le volume de données reste)
+docker compose down -v   # tout supprimer, volume compris -> base recréée au prochain up
 ```
+
+> 💡 Les scripts `01`/`02` ne sont rejoués **qu'au premier démarrage** (volume vide). Si tu modifies un script, fais `docker compose down -v` puis `docker compose up -d` pour forcer le rechargement.
+
+**Alternative sans Docker :** exécuter les deux scripts à la main dans n'importe quel client MySQL (Workbench, ou `mysql -u root -p < database/01_KotKonnect_schema.sql` puis `02`).
 
 ## 4. Configuration du backend
 
@@ -76,7 +87,7 @@ Le fichier de configuration contenant les secrets n'est **pas versionné**. Il f
 ```json
 {
   "ConnectionStrings": {
-    "Default": "Server=localhost;Port=3306;Database=kotkonnect;User=root;Password=VOTRE_MOT_DE_PASSE_MYSQL"
+    "Default": "Server=localhost;Port=3306;Database=kotkonnect;User=root;Password=kotkonnectdev"
   },
   "Jwt": {
     "Secret": "remplacez-par-une-chaine-secrete-aleatoire-d-au-moins-32-caracteres",
@@ -87,7 +98,7 @@ Le fichier de configuration contenant les secrets n'est **pas versionné**. Il f
 }
 ```
 
-3. Remplacer `VOTRE_MOT_DE_PASSE_MYSQL` par le mot de passe root choisi à l'installation de MySQL.
+3. Le mot de passe `kotkonnectdev` correspond à celui défini dans `docker-compose.yml` — ne pas le changer si tu utilises Docker. (Si tu as installé MySQL toi-même, mets ton propre mot de passe root à la place.)
 4. Remplacer la valeur de `Secret` par n'importe quelle chaîne d'au moins 32 caractères.
 
 ## 5. Lancement du backend
